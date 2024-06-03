@@ -23,7 +23,6 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
 
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
@@ -37,7 +36,21 @@ enum IntoColorError {
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
+
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (red, green, blue) = tuple;
+        let red_checked = red.try_into();
+        let green_checked = green.try_into();
+        let blue_checked = blue.try_into();
+        if let (Ok(red_ok), Ok(green_ok), Ok(blue_ok)) = (red_checked, green_checked, blue_checked) {
+            Ok(Color { 
+                red: red_ok,
+                green: green_ok,
+                blue: blue_ok,
+            })        
+        } else {
+            Err(IntoColorError::IntConversion)
+        }
     }
 }
 
@@ -45,6 +58,19 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let [red, green, blue] = arr;
+        let red_checked = red.try_into();
+        let green_checked = green.try_into();
+        let blue_checked = blue.try_into();
+        if let (Ok(red_ok), Ok(green_ok), Ok(blue_ok)) = (red_checked, green_checked, blue_checked) {
+            Ok(Color { 
+                red: red_ok,
+                green: green_ok,
+                blue: blue_ok,
+            })        
+        } else {
+            Err(IntoColorError::IntConversion)
+        }
     }
 }
 
@@ -52,6 +78,22 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() != 3 {
+            Err(IntoColorError::BadLen)
+        } else {
+            let red_checked = slice[0].try_into();
+            let green_checked = slice[1].try_into();
+            let blue_checked = slice[2].try_into();
+            if let (Ok(red_ok), Ok(green_ok), Ok(blue_ok)) = (red_checked, green_checked, blue_checked) {
+                Ok(Color { 
+                    red: red_ok,
+                    green: green_ok,
+                    blue: blue_ok,
+                })        
+            } else {
+                Err(IntoColorError::IntConversion)
+            }
+        }
     }
 }
 
